@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ServiceCard } from "@/components/ServiceCard";
 import { BottomNav } from "@/components/BottomNav";
+import { FeedPost } from "@/components/FeedPost";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import campusLogo from "@/assets/campus-logo.png";
 
@@ -12,6 +13,54 @@ const Home = () => {
     { icon: AlertCircle, label: "Emergency", href: "/emergency" },
     { icon: GraduationCap, label: "Core Values", href: "/core-values" },
     { icon: FileText, label: "Campus Updates", href: "/news" },
+  ];
+
+  const feedPosts = [
+    {
+      id: 1,
+      author: "SILAHIS",
+      authorType: "publication" as const,
+      timestamp: "2 hours ago",
+      content: "MSU-IIT celebrates its 50th founding anniversary with a week-long celebration featuring cultural performances, academic symposiums, and alumni gatherings. Join us in commemorating five decades of excellence in education! 🎉",
+      likes: 234,
+      comments: 45,
+    },
+    {
+      id: 2,
+      author: "Dean Maria Santos",
+      authorType: "admin" as const,
+      timestamp: "4 hours ago",
+      content: "Reminder: All students are required to attend the General Assembly tomorrow at 2:00 PM in the Main Auditorium. Please bring your student IDs.",
+      likes: 189,
+      comments: 23,
+    },
+    {
+      id: 3,
+      author: "THE MOTHERBOARD",
+      authorType: "publication" as const,
+      timestamp: "6 hours ago",
+      content: "College of Computer Studies announces new AI and Machine Learning laboratory opening next semester. State-of-the-art facilities with high-performance computing resources will be available to all CCS students.",
+      likes: 312,
+      comments: 67,
+    },
+    {
+      id: 4,
+      author: "Student Affairs Office",
+      authorType: "admin" as const,
+      timestamp: "8 hours ago",
+      content: "Scholarship applications for the next academic year are now open! Visit the Student Affairs Office or check our e-Services portal for requirements and deadlines. Don't miss this opportunity!",
+      likes: 156,
+      comments: 34,
+    },
+    {
+      id: 5,
+      author: "CASSAYURAN",
+      authorType: "publication" as const,
+      timestamp: "1 day ago",
+      content: "The College of Arts and Social Sciences invites everyone to the Cultural Night this Friday at 6:00 PM. Experience diverse performances from different cultural groups across campus. Free admission for all!",
+      likes: 278,
+      comments: 52,
+    },
   ];
 
   return (
@@ -113,35 +162,16 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Latest Updates Preview */}
+        {/* Campus Feed */}
         <section className="mt-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-foreground">Latest Updates</h3>
+            <h3 className="text-lg font-semibold text-foreground">Campus Feed</h3>
             <Button variant="ghost" size="sm" className="text-primary">View All</Button>
           </div>
-          <div className="space-y-3">
-            <div className="bg-card p-4 rounded-xl border border-border">
-              <div className="flex items-start gap-3">
-                <div className="p-2 rounded-lg bg-accent/10">
-                  <FileText className="h-4 w-4 text-accent" />
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-medium text-foreground mb-1">New Academic Calendar Released</h4>
-                  <p className="text-xs text-muted-foreground">Posted 2 hours ago</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-card p-4 rounded-xl border border-border">
-              <div className="flex items-start gap-3">
-                <div className="p-2 rounded-lg bg-secondary/10">
-                  <AlertCircle className="h-4 w-4 text-secondary" />
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-medium text-foreground mb-1">Campus Maintenance Notice</h4>
-                  <p className="text-xs text-muted-foreground">Posted 5 hours ago</p>
-                </div>
-              </div>
-            </div>
+          <div className="space-y-4">
+            {feedPosts.map((post) => (
+              <FeedPost key={post.id} {...post} />
+            ))}
           </div>
         </section>
       </main>
