@@ -43,27 +43,27 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
-            <Routes>
+          <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/home" element={<Home />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/e-services" element={<EServices />} />
-          <Route path="/core-values" element={<CoreValues />} />
-          <Route path="/report-issue" element={<ReportIssue />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/news" element={<News />} />
-          <Route path="/publications" element={<Publications />} />
-          <Route path="/publications/silahis" element={<Silahis />} />
-          <Route path="/publications/sidlak" element={<Sidlak />} />
-          <Route path="/publications/cassayuran" element={<Cassayuran />} />
-          <Route path="/publications/motherboard" element={<Motherboard />} />
-          <Route path="/publications/sindaw" element={<Sindaw />} />
-          <Route path="/publications/adinfinitum" element={<AdInfinitum />} />
-          <Route path="/publications/caduceus" element={<Caduceus />} />
-          <Route path="/publications/thuum" element={<Thuum />} />
-          <Route path="/map" element={<Map />} />
-          <Route path="/emergency" element={<Emergency />} />
-          <Route path="/account" element={<Account />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+            <Route path="/services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
+            <Route path="/e-services" element={<ProtectedRoute><EServices /></ProtectedRoute>} />
+            <Route path="/core-values" element={<ProtectedRoute><CoreValues /></ProtectedRoute>} />
+            <Route path="/report-issue" element={<ProtectedRoute><ReportIssue /></ProtectedRoute>} />
+            <Route path="/news" element={<ProtectedRoute><News /></ProtectedRoute>} />
+            <Route path="/publications" element={<ProtectedRoute><Publications /></ProtectedRoute>} />
+          <Route path="/publications/silahis" element={<ProtectedRoute><Silahis /></ProtectedRoute>} />
+          <Route path="/publications/sidlak" element={<ProtectedRoute><Sidlak /></ProtectedRoute>} />
+          <Route path="/publications/cassayuran" element={<ProtectedRoute><Cassayuran /></ProtectedRoute>} />
+          <Route path="/publications/motherboard" element={<ProtectedRoute><Motherboard /></ProtectedRoute>} />
+          <Route path="/publications/sindaw" element={<ProtectedRoute><Sindaw /></ProtectedRoute>} />
+          <Route path="/publications/adinfinitum" element={<ProtectedRoute><AdInfinitum /></ProtectedRoute>} />
+          <Route path="/publications/caduceus" element={<ProtectedRoute><Caduceus /></ProtectedRoute>} />
+          <Route path="/publications/thuum" element={<ProtectedRoute><Thuum /></ProtectedRoute>} />
+          <Route path="/map" element={<ProtectedRoute><Map /></ProtectedRoute>} />
+          <Route path="/emergency" element={<ProtectedRoute><Emergency /></ProtectedRoute>} />
+          <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
           <Route path="/admin/posts" element={<ProtectedRoute requireAdmin><AdminPosts /></ProtectedRoute>} />
           <Route path="/admin/issues" element={<ProtectedRoute requireAdmin><AdminIssues /></ProtectedRoute>} />
