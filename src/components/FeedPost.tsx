@@ -73,16 +73,18 @@ export const FeedPost = ({
 
       {/* Facebook Embed Link */}
       {facebookUrl && (
-        <button 
-          onClick={() => window.open(facebookUrl, '_blank', 'noopener,noreferrer')}
-          className="flex items-center gap-2 p-3 mb-3 rounded-lg bg-secondary/30 border border-border hover:bg-secondary/50 transition-colors w-full text-left cursor-pointer"
+        <a 
+          href={facebookUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 p-3 mb-3 rounded-lg bg-secondary/30 border border-border hover:bg-secondary/50 transition-colors w-full text-left"
         >
           <Facebook className="h-5 w-5 text-[#1877F2]" />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-foreground">View on Facebook</p>
             <p className="text-xs text-muted-foreground truncate">{facebookUrl}</p>
           </div>
-        </button>
+        </a>
       )}
 
       {/* Image if exists */}
