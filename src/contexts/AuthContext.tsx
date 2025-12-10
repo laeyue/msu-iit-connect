@@ -9,7 +9,15 @@ interface AuthContextType {
   isAdmin: boolean;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signUp: (email: string, password: string, displayName: string) => Promise<{ error: any }>;
+  signUp: (
+    email: string, 
+    password: string, 
+    displayName: string,
+    userType: 'student' | 'faculty' | 'student_council',
+    college: string,
+    employeeId?: string,
+    studentId?: string
+  ) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
 }
 
@@ -89,7 +97,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error };
   };
 
-  const signUp = async (email: string, password: string, displayName: string) => {
+  const signUp = async (
+    email: string, 
+    password: string, 
+    displayName: string,
+    userType: 'student' | 'faculty' | 'student_council',
+    college: string,
+    employeeId?: string,
+    studentId?: string
+  ) => {
     const redirectUrl = `${window.location.origin}/`;
     
     const { error } = await supabase.auth.signUp({
@@ -99,6 +115,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         emailRedirectTo: redirectUrl,
         data: {
           display_name: displayName,
+          user_type: userType,
+          college: college,
+          employee_id: employeeId,
+          student_id: studentId,
         }
       }
     });
