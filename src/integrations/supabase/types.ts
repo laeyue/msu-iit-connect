@@ -103,25 +103,40 @@ export type Database = {
       }
       profiles: {
         Row: {
+          college: Database["public"]["Enums"]["college"] | null
           created_at: string
           display_name: string | null
+          employee_id: string | null
           id: string
+          is_verified: boolean | null
+          student_id: string | null
           updated_at: string
           user_id: string
+          user_type: Database["public"]["Enums"]["user_type"] | null
         }
         Insert: {
+          college?: Database["public"]["Enums"]["college"] | null
           created_at?: string
           display_name?: string | null
+          employee_id?: string | null
           id?: string
+          is_verified?: boolean | null
+          student_id?: string | null
           updated_at?: string
           user_id: string
+          user_type?: Database["public"]["Enums"]["user_type"] | null
         }
         Update: {
+          college?: Database["public"]["Enums"]["college"] | null
           created_at?: string
           display_name?: string | null
+          employee_id?: string | null
           id?: string
+          is_verified?: boolean | null
+          student_id?: string | null
           updated_at?: string
           user_id?: string
+          user_type?: Database["public"]["Enums"]["user_type"] | null
         }
         Relationships: []
       }
@@ -201,6 +216,14 @@ export type Database = {
     Enums: {
       app_role: "admin" | "user"
       author_type: "publication" | "admin"
+      college:
+        | "college_of_engineering_and_technology"
+        | "college_of_science_and_mathematics"
+        | "college_of_computer_studies"
+        | "college_of_education"
+        | "college_of_arts_and_science"
+        | "college_of_business_administration_and_accountancy"
+        | "college_of_nursing"
       publication_type:
         | "silahis"
         | "sidlak"
@@ -210,6 +233,7 @@ export type Database = {
         | "adinfinitum"
         | "caduceus"
         | "thuum"
+      user_type: "student" | "faculty" | "student_council"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -339,6 +363,15 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "user"],
       author_type: ["publication", "admin"],
+      college: [
+        "college_of_engineering_and_technology",
+        "college_of_science_and_mathematics",
+        "college_of_computer_studies",
+        "college_of_education",
+        "college_of_arts_and_science",
+        "college_of_business_administration_and_accountancy",
+        "college_of_nursing",
+      ],
       publication_type: [
         "silahis",
         "sidlak",
@@ -349,6 +382,7 @@ export const Constants = {
         "caduceus",
         "thuum",
       ],
+      user_type: ["student", "faculty", "student_council"],
     },
   },
 } as const
