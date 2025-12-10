@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { subDays, format } from "date-fns";
+import { subDays } from "date-fns";
+import { useEffect } from "react";
 
 export type PublicationType = 
   | "silahis"
@@ -37,9 +38,34 @@ interface UsePostsOptions {
 }
 
 export const usePosts = (options?: PublicationType | UsePostsOptions) => {
+  const queryClient = useQueryClient();
+  
   // Handle both old string param and new options object
   const publicationId = typeof options === 'string' ? options : options?.publicationId;
   const recentDays = typeof options === 'object' ? options?.recentDays : undefined;
+
+  // Subscribe to real-time updates
+  useEffect(() => {
+    const channel = supabase
+      .channel('posts-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'posts'
+        },
+        () => {
+          // Invalidate and refetch posts when any change occurs
+          queryClient.invalidateQueries({ queryKey: ["posts"] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   return useQuery({
     queryKey: ["posts", publicationId, recentDays],
