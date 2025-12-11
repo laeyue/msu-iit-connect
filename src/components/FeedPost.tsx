@@ -10,6 +10,16 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
+// Import publication logos
+import silahisLogo from "@/assets/publications/silahis-logo.png";
+import sidlakLogo from "@/assets/publications/sidlak-logo.png";
+import cassayuranLogo from "@/assets/publications/cassayuran-logo.png";
+import motherboardLogo from "@/assets/publications/motherboard-logo.png";
+import sindawLogo from "@/assets/publications/sindaw-logo.png";
+import adinfinitumLogo from "@/assets/publications/adinfinitum-logo.png";
+import caduceusLogo from "@/assets/publications/caduceus-logo.png";
+import thuumLogo from "@/assets/publications/thuum-logo.png";
+
 interface Comment {
   id: string;
   content: string;
@@ -43,6 +53,17 @@ const publicationLabels: Record<string, string> = {
   adinfinitum: "Ad Infinitum",
   caduceus: "Caduceus",
   thuum: "Thuum",
+};
+
+const publicationLogos: Record<string, string> = {
+  silahis: silahisLogo,
+  sidlak: sidlakLogo,
+  cassayuran: cassayuranLogo,
+  motherboard: motherboardLogo,
+  sindaw: sindawLogo,
+  adinfinitum: adinfinitumLogo,
+  caduceus: caduceusLogo,
+  thuum: thuumLogo,
 };
 
 export const FeedPost = ({ 
@@ -264,7 +285,7 @@ export const FeedPost = ({
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={avatar} />
+            <AvatarImage src={publicationId ? publicationLogos[publicationId] : avatar} />
             <AvatarFallback className="bg-primary/10 text-primary font-semibold">
               {author.charAt(0)}
             </AvatarFallback>
