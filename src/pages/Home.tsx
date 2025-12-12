@@ -84,7 +84,7 @@ const Home = () => {
             {isAdmin && (
               <Button
                 onClick={() => navigate("/admin")}
-                className="w-full bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 text-accent-foreground h-14 rounded-xl font-semibold"
+                className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground h-14 rounded-xl font-semibold border-2 border-primary-foreground/20"
                 style={{ boxShadow: "var(--shadow-elevated)" }}
               >
                 <Shield className="h-5 w-5 mr-2" />
