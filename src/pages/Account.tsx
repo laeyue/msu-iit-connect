@@ -1,12 +1,12 @@
 import { User, Settings, Bell, Shield, HelpCircle, LogOut, ChevronRight, Users, Building2, GraduationCap, Briefcase, FileText } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { AvatarUpload } from "@/components/AvatarUpload";
 
 interface Profile {
   display_name: string | null;
@@ -15,6 +15,7 @@ interface Profile {
   student_id: string | null;
   employee_id: string | null;
   is_verified: boolean | null;
+  avatar_url: string | null;
 }
 
 const Account = () => {
@@ -31,7 +32,7 @@ const Account = () => {
     const fetchProfile = async () => {
       const { data } = await supabase
         .from('profiles')
-        .select('display_name, user_type, college, student_id, employee_id, is_verified')
+        .select('display_name, user_type, college, student_id, employee_id, is_verified, avatar_url')
         .eq('user_id', user.id)
         .maybeSingle();
       
@@ -122,11 +123,12 @@ const Account = () => {
           {/* Profile Card */}
           <div className="bg-primary-foreground/10 backdrop-blur-sm rounded-2xl p-4 border border-primary-foreground/20">
             <div className="flex items-center gap-4">
-              <Avatar className="h-16 w-16 border-2 border-primary-foreground">
-                <AvatarFallback className="bg-primary-foreground text-primary text-xl font-semibold">
-                  {getInitials(displayName)}
-                </AvatarFallback>
-              </Avatar>
+              <AvatarUpload
+                avatarUrl={profile?.avatar_url || null}
+                displayName={displayName}
+                onAvatarChange={(url) => setProfile(prev => prev ? { ...prev, avatar_url: url } : null)}
+                size="lg"
+              />
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-primary-foreground mb-0.5">{displayName}</h2>
                 <p className="text-primary-foreground/80 text-sm mb-1">{user?.email}</p>

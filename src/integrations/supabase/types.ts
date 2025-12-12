@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       issues: {
         Row: {
+          attachment_url: string | null
           category: string | null
           created_at: string
           email: string
@@ -28,6 +29,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          attachment_url?: string | null
           category?: string | null
           created_at?: string
           email: string
@@ -40,6 +42,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          attachment_url?: string | null
           category?: string | null
           created_at?: string
           email?: string
@@ -170,6 +173,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           college: Database["public"]["Enums"]["college"] | null
           created_at: string
           display_name: string | null
@@ -182,6 +186,7 @@ export type Database = {
           user_type: Database["public"]["Enums"]["user_type"] | null
         }
         Insert: {
+          avatar_url?: string | null
           college?: Database["public"]["Enums"]["college"] | null
           created_at?: string
           display_name?: string | null
@@ -194,6 +199,7 @@ export type Database = {
           user_type?: Database["public"]["Enums"]["user_type"] | null
         }
         Update: {
+          avatar_url?: string | null
           college?: Database["public"]["Enums"]["college"] | null
           created_at?: string
           display_name?: string | null
