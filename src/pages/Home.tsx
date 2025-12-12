@@ -1,4 +1,4 @@
-import { Search, Globe, AlertCircle, GraduationCap, FileText, Plus, ChevronDown, Shield, Users, Briefcase, Facebook } from "lucide-react";
+import { Search, Globe, AlertCircle, GraduationCap, FileText, Plus, Shield, Users, Briefcase, Facebook, Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ServiceCard } from "@/components/ServiceCard";
@@ -6,6 +6,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { FeedPost } from "@/components/FeedPost";
 import { FacebookFeed } from "@/components/FacebookFeed";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePosts } from "@/hooks/usePosts";
 import { format } from "date-fns";
 import { useState, useMemo } from "react";
@@ -186,47 +187,59 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Facebook Posts from Publications */}
+        {/* Tabbed Feed Section */}
         <section className="mt-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Facebook className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-semibold text-foreground">Latest from Publications</h3>
-          </div>
-          <FacebookFeed limit={5} showHeader={false} />
-        </section>
+          <Tabs defaultValue="publications" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-4 bg-muted/50 p-1 rounded-xl">
+              <TabsTrigger 
+                value="publications" 
+                className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg"
+              >
+                <Facebook className="h-4 w-4" />
+                Publications
+              </TabsTrigger>
+              <TabsTrigger 
+                value="campus-feed" 
+                className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg"
+              >
+                <Newspaper className="h-4 w-4" />
+                Campus Feed
+              </TabsTrigger>
+            </TabsList>
 
-        {/* Campus Feed */}
-        <section className="mt-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-foreground">Campus Feed</h3>
-            <Button variant="ghost" size="sm" className="text-primary">View All</Button>
-          </div>
-          <div className="space-y-4">
-            {isLoading ? (
-              <p className="text-center text-muted-foreground">Loading posts...</p>
-            ) : filteredPosts && filteredPosts.length > 0 ? (
-              filteredPosts.map((post) => (
-                <FeedPost
-                  key={post.id}
-                  id={post.id}
-                  author={post.author}
-                  authorType={post.author_type}
-                  avatar={undefined}
-                  timestamp={format(new Date(post.created_at), "MMM d, yyyy")}
-                  content={post.content}
-                  image={post.image_url || undefined}
-                  likes={post.likes}
-                  comments={post.comments_count}
-                  facebookUrl={post.facebook_url || undefined}
-                  publicationId={post.publication_id}
-                />
-              ))
-            ) : searchQuery ? (
-              <p className="text-center text-muted-foreground">No posts match "{searchQuery}"</p>
-            ) : (
-              <p className="text-center text-muted-foreground">No posts yet. Check back later!</p>
-            )}
-          </div>
+            <TabsContent value="publications" className="mt-0">
+              <FacebookFeed limit={5} showHeader={false} />
+            </TabsContent>
+
+            <TabsContent value="campus-feed" className="mt-0">
+              <div className="space-y-4">
+                {isLoading ? (
+                  <p className="text-center text-muted-foreground py-8">Loading posts...</p>
+                ) : filteredPosts && filteredPosts.length > 0 ? (
+                  filteredPosts.map((post) => (
+                    <FeedPost
+                      key={post.id}
+                      id={post.id}
+                      author={post.author}
+                      authorType={post.author_type}
+                      avatar={undefined}
+                      timestamp={format(new Date(post.created_at), "MMM d, yyyy")}
+                      content={post.content}
+                      image={post.image_url || undefined}
+                      likes={post.likes}
+                      comments={post.comments_count}
+                      facebookUrl={post.facebook_url || undefined}
+                      publicationId={post.publication_id}
+                    />
+                  ))
+                ) : searchQuery ? (
+                  <p className="text-center text-muted-foreground py-8">No posts match "{searchQuery}"</p>
+                ) : (
+                  <p className="text-center text-muted-foreground py-8">No posts yet. Check back later!</p>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
         </section>
       </main>
 
