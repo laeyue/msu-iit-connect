@@ -131,8 +131,10 @@ const Account = () => {
                   {isStudentCouncil && (
                     <Badge variant="secondary" className="text-xs">Student Council</Badge>
                   )}
-                  {profile?.is_verified && (
+                  {profile?.is_verified ? (
                     <Badge variant="outline" className="text-xs border-primary-foreground/30 text-primary-foreground/80">Verified</Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-xs border-destructive/50 text-destructive bg-destructive/10">Unverified</Badge>
                   )}
                 </div>
               </div>
