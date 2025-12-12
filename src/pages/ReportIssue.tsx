@@ -9,6 +9,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { ImageCapture } from "@/components/ImageCapture";
 
 const ReportIssue = () => {
   const { user } = useAuth();
@@ -20,6 +21,22 @@ const ReportIssue = () => {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [attachedImage, setAttachedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleImageCapture = (file: File) => {
+    setAttachedImage(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const clearImage = () => {
+    setAttachedImage(null);
+    setImagePreview(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +49,28 @@ const ReportIssue = () => {
     setIsSubmitting(true);
 
     try {
+      let attachmentUrl: string | null = null;
+
+      // Upload image if attached
+      if (attachedImage && user) {
+        const fileExt = attachedImage.name.split('.').pop();
+        const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('issue-attachments')
+          .upload(fileName, attachedImage);
+
+        if (uploadError) {
+          console.error("Error uploading image:", uploadError);
+          toast.error("Failed to upload image, but we'll still submit your report");
+        } else {
+          const { data: { publicUrl } } = supabase.storage
+            .from('issue-attachments')
+            .getPublicUrl(fileName);
+          attachmentUrl = publicUrl;
+        }
+      }
+
       // Insert issue into database with user_id for tracking
       const { error: insertError } = await supabase
         .from('issues')
@@ -42,6 +81,7 @@ const ReportIssue = () => {
           category: formData.category || null,
           message: formData.message,
           user_id: user?.id || null,
+          attachment_url: attachmentUrl,
         });
 
       if (insertError) {
@@ -97,6 +137,7 @@ const ReportIssue = () => {
         category: "",
         message: "",
       });
+      clearImage();
     } catch (error: any) {
       console.error("Error submitting report:", error);
       toast.error("Failed to submit report. Please try again.");
@@ -180,12 +221,23 @@ const ReportIssue = () => {
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 placeholder="Describe the issue in detail..."
-                className="min-h-[150px] resize-none"
+                className="min-h-[120px] resize-none"
                 required
               />
             </div>
 
-            <Button 
+            <div>
+              <Label className="text-foreground mb-2 block">
+                Attach Photo (optional)
+              </Label>
+              <ImageCapture
+                onImageCapture={handleImageCapture}
+                imagePreview={imagePreview}
+                onClear={clearImage}
+              />
+            </div>
+
+            <Button
               type="submit" 
               className="w-full" 
               size="lg"

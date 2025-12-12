@@ -7,9 +7,11 @@ import { FeedPost } from "@/components/FeedPost";
 import { FacebookFeed } from "@/components/FacebookFeed";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { usePosts } from "@/hooks/usePosts";
 import { format } from "date-fns";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -17,9 +19,36 @@ import { useNavigate } from "react-router-dom";
 const Home = () => {
   // Fetch posts from last 30 days with real-time updates
   const { data: posts, isLoading } = usePosts({ recentDays: 30 });
-  const { isAdmin, isStudentCouncil, isFaculty } = useAuth();
+  const { isAdmin, isStudentCouncil, isFaculty, user } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string | null>(null);
+
+  // Fetch user's avatar
+  useEffect(() => {
+    if (!user) return;
+    
+    const fetchProfile = async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('avatar_url, display_name')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (data) {
+        setAvatarUrl(data.avatar_url);
+        setDisplayName(data.display_name);
+      }
+    };
+
+    fetchProfile();
+  }, [user]);
+
+  const getInitials = (name: string | null) => {
+    if (!name) return 'U';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  };
   
   const services = [
     { icon: Globe, label: "e-Services", href: "/e-services" },
@@ -58,11 +87,17 @@ const Home = () => {
               <h1 className="text-2xl font-bold mb-1">MSU-IIT CampusLink</h1>
               <p className="text-primary-foreground/80 text-sm">Mobile Application for Student Service & Engagement</p>
             </div>
-            <div className="relative">
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse"></div>
-              <div className="w-10 h-10 rounded-full bg-primary-foreground/20 flex items-center justify-center">
-                <span className="text-lg font-semibold">1</span>
-              </div>
+            <div 
+              className="relative cursor-pointer"
+              onClick={() => navigate('/account')}
+            >
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse z-10"></div>
+              <Avatar className="h-10 w-10 border-2 border-primary-foreground/30">
+                <AvatarImage src={avatarUrl || undefined} alt={displayName || "User"} />
+                <AvatarFallback className="bg-primary-foreground/20 text-primary-foreground text-sm font-semibold">
+                  {getInitials(displayName)}
+                </AvatarFallback>
+              </Avatar>
             </div>
           </div>
 
