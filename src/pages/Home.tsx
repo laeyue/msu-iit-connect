@@ -1,9 +1,10 @@
-import { Search, Globe, AlertCircle, GraduationCap, FileText, Plus, ChevronDown, Shield, Users, Briefcase } from "lucide-react";
+import { Search, Globe, AlertCircle, GraduationCap, FileText, Plus, ChevronDown, Shield, Users, Briefcase, Facebook } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ServiceCard } from "@/components/ServiceCard";
 import { BottomNav } from "@/components/BottomNav";
 import { FeedPost } from "@/components/FeedPost";
+import { FacebookFeed } from "@/components/FacebookFeed";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { usePosts } from "@/hooks/usePosts";
 import { format } from "date-fns";
@@ -183,6 +184,15 @@ const Home = () => {
               Report Issue
             </Button>
           </div>
+        </section>
+
+        {/* Facebook Posts from Publications */}
+        <section className="mt-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Facebook className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-semibold text-foreground">Latest from Publications</h3>
+          </div>
+          <FacebookFeed limit={5} showHeader={false} />
         </section>
 
         {/* Campus Feed */}
