@@ -78,45 +78,41 @@ const Home = () => {
 
       <main className="max-w-md mx-auto px-4 py-6">
 
-        {/* Admin Panel Button */}
-        {isAdmin && (
-          <section className="mb-4">
-            <Button
-              onClick={() => navigate("/admin")}
-              className="w-full bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 text-accent-foreground h-14 rounded-xl"
-              style={{ boxShadow: "var(--shadow-elevated)" }}
-            >
-              <Shield className="h-5 w-5 mr-2" />
-              Admin Panel
-            </Button>
-          </section>
-        )}
+        {/* Role-Based Panel Buttons */}
+        {(isAdmin || isStudentCouncil || isFaculty) && (
+          <section className="mb-6 space-y-3">
+            {isAdmin && (
+              <Button
+                onClick={() => navigate("/admin")}
+                className="w-full bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 text-accent-foreground h-14 rounded-xl font-semibold"
+                style={{ boxShadow: "var(--shadow-elevated)" }}
+              >
+                <Shield className="h-5 w-5 mr-2" />
+                Admin Panel
+              </Button>
+            )}
 
-        {/* Student Council Panel Button */}
-        {isStudentCouncil && (
-          <section className="mb-4">
-            <Button
-              onClick={() => navigate("/council")}
-              className="w-full bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 text-secondary-foreground h-14 rounded-xl"
-              style={{ boxShadow: "var(--shadow-elevated)" }}
-            >
-              <Users className="h-5 w-5 mr-2" />
-              Student Council Panel
-            </Button>
-          </section>
-        )}
+            {isStudentCouncil && (
+              <Button
+                onClick={() => navigate("/council")}
+                className="w-full bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 text-secondary-foreground h-14 rounded-xl font-semibold"
+                style={{ boxShadow: "var(--shadow-elevated)" }}
+              >
+                <Users className="h-5 w-5 mr-2" />
+                Student Council Panel
+              </Button>
+            )}
 
-        {/* Faculty Panel Button */}
-        {isFaculty && (
-          <section className="mb-6">
-            <Button
-              onClick={() => navigate("/faculty")}
-              className="w-full bg-gradient-to-r from-primary/80 to-primary/60 hover:from-primary/70 hover:to-primary/50 text-primary-foreground h-14 rounded-xl"
-              style={{ boxShadow: "var(--shadow-elevated)" }}
-            >
-              <Briefcase className="h-5 w-5 mr-2" />
-              Faculty Panel
-            </Button>
+            {isFaculty && (
+              <Button
+                onClick={() => navigate("/faculty")}
+                className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground h-14 rounded-xl font-semibold"
+                style={{ boxShadow: "var(--shadow-elevated)" }}
+              >
+                <Briefcase className="h-5 w-5 mr-2" />
+                Faculty Panel
+              </Button>
+            )}
           </section>
         )}
 
