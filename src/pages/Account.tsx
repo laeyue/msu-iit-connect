@@ -1,16 +1,26 @@
-import { User, Settings, Bell, Shield, HelpCircle, LogOut, ChevronRight } from "lucide-react";
+import { User, Settings, Bell, Shield, HelpCircle, LogOut, ChevronRight, Users, Building2, GraduationCap, Briefcase } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 
+interface Profile {
+  display_name: string | null;
+  user_type: 'student' | 'faculty' | 'student_council' | null;
+  college: string | null;
+  student_id: string | null;
+  employee_id: string | null;
+  is_verified: boolean | null;
+}
+
 const Account = () => {
-  const { user, signOut, isAdmin } = useAuth();
+  const { user, signOut, isAdmin, isStudentCouncil } = useAuth();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<{ display_name: string | null } | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -21,7 +31,7 @@ const Account = () => {
     const fetchProfile = async () => {
       const { data } = await supabase
         .from('profiles')
-        .select('display_name')
+        .select('display_name, user_type, college, student_id, employee_id, is_verified')
         .eq('user_id', user.id)
         .maybeSingle();
       
@@ -38,7 +48,33 @@ const Account = () => {
 
   const displayName = profile?.display_name || user?.email?.split('@')[0] || 'User';
 
+  const getUserTypeLabel = (type: string | null) => {
+    switch (type) {
+      case 'student': return 'Student';
+      case 'faculty': return 'Faculty';
+      case 'student_council': return 'Student Council';
+      default: return 'User';
+    }
+  };
+
+  const getUserTypeIcon = (type: string | null) => {
+    switch (type) {
+      case 'student': return GraduationCap;
+      case 'faculty': return Briefcase;
+      case 'student_council': return Users;
+      default: return User;
+    }
+  };
+
+  const UserTypeIcon = getUserTypeIcon(profile?.user_type);
+
   const menuItems = [
+    ...(isStudentCouncil ? [{
+      icon: Users,
+      label: "Council Dashboard",
+      description: "Manage student council activities",
+      href: "/council",
+    }] : []),
     {
       icon: Settings,
       label: "Settings",
@@ -82,11 +118,47 @@ const Account = () => {
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-primary-foreground mb-0.5">{displayName}</h2>
                 <p className="text-primary-foreground/80 text-sm mb-1">{user?.email}</p>
-                {isAdmin && (
-                  <p className="text-primary-foreground/70 text-xs font-semibold">Admin Account</p>
-                )}
+                <div className="flex items-center gap-2 flex-wrap">
+                  {isAdmin && (
+                    <Badge variant="secondary" className="text-xs">Admin</Badge>
+                  )}
+                  {isStudentCouncil && (
+                    <Badge variant="secondary" className="text-xs">Student Council</Badge>
+                  )}
+                  {profile?.is_verified && (
+                    <Badge variant="outline" className="text-xs border-primary-foreground/30 text-primary-foreground/80">Verified</Badge>
+                  )}
+                </div>
               </div>
             </div>
+            
+            {/* User Details */}
+            {profile && (
+              <div className="mt-4 pt-4 border-t border-primary-foreground/20 space-y-2">
+                <div className="flex items-center gap-2 text-primary-foreground/90 text-sm">
+                  <UserTypeIcon className="h-4 w-4" />
+                  <span>{getUserTypeLabel(profile.user_type)}</span>
+                </div>
+                {profile.college && (
+                  <div className="flex items-center gap-2 text-primary-foreground/90 text-sm">
+                    <Building2 className="h-4 w-4" />
+                    <span className="truncate">{profile.college}</span>
+                  </div>
+                )}
+                {profile.student_id && (
+                  <div className="flex items-center gap-2 text-primary-foreground/80 text-sm">
+                    <span className="text-primary-foreground/60">Student ID:</span>
+                    <span>{profile.student_id}</span>
+                  </div>
+                )}
+                {profile.employee_id && (
+                  <div className="flex items-center gap-2 text-primary-foreground/80 text-sm">
+                    <span className="text-primary-foreground/60">Employee ID:</span>
+                    <span>{profile.employee_id}</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </header>
