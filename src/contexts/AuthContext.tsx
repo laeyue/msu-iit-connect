@@ -7,6 +7,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   isAdmin: boolean;
+  isStudentCouncil: boolean;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (
@@ -27,6 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isStudentCouncil, setIsStudentCouncil] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -41,9 +43,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (session?.user) {
           setTimeout(() => {
             checkAdminRole(session.user.id);
+            checkStudentCouncilRole(session.user.id);
           }, 0);
         } else {
           setIsAdmin(false);
+          setIsStudentCouncil(false);
         }
       }
     );
@@ -56,6 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (session?.user) {
         setTimeout(() => {
           checkAdminRole(session.user.id);
+          checkStudentCouncilRole(session.user.id);
         }, 0);
       }
       setLoading(false);
@@ -81,6 +86,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('Error checking admin role:', error);
       setIsAdmin(false);
+    }
+  };
+
+  const checkStudentCouncilRole = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('user_type')
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      if (!error && data && data.user_type === 'student_council') {
+        setIsStudentCouncil(true);
+      } else {
+        setIsStudentCouncil(false);
+      }
+    } catch (error) {
+      console.error('Error checking student council role:', error);
+      setIsStudentCouncil(false);
     }
   };
 
@@ -133,11 +157,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signOut = async () => {
     await supabase.auth.signOut();
     setIsAdmin(false);
+    setIsStudentCouncil(false);
     navigate('/auth');
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isAdmin, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, isAdmin, isStudentCouncil, loading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );
