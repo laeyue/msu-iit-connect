@@ -6,6 +6,7 @@ import { ArrowLeft, Facebook } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePosts } from "@/hooks/usePosts";
 import { format } from "date-fns";
+import { FacebookFeed } from "@/components/FacebookFeed";
 import cassayuranLogo from "@/assets/publications/cassayuran-logo.png";
 
 const Cassayuran = () => {
@@ -39,35 +40,44 @@ const Cassayuran = () => {
           </a>
         </div>
 
-        <div className="space-y-4">
-          {isLoading ? (
-            <p className="text-center text-muted-foreground">Loading posts...</p>
-          ) : posts && posts.length > 0 ? (
-            posts.map((post) => (
-              <Card key={post.id}>
-                <CardHeader>
-                  {post.category && (
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge variant="secondary">{post.category}</Badge>
+        {/* Facebook Embedded Posts */}
+        <section>
+          <FacebookFeed publicationId="cassayuran" limit={3} />
+        </section>
+
+        {/* Database Posts */}
+        <section>
+          <h3 className="text-lg font-semibold text-foreground mb-4">Recent Articles</h3>
+          <div className="space-y-4">
+            {isLoading ? (
+              <p className="text-center text-muted-foreground">Loading posts...</p>
+            ) : posts && posts.length > 0 ? (
+              posts.map((post) => (
+                <Card key={post.id}>
+                  <CardHeader>
+                    {post.category && (
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant="secondary">{post.category}</Badge>
+                      </div>
+                    )}
+                    <CardTitle className="text-xl">{post.title}</CardTitle>
+                    {post.excerpt && (
+                      <CardDescription className="mt-2">{post.excerpt}</CardDescription>
+                    )}
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center text-sm text-muted-foreground gap-4">
+                      <span>By {post.author}</span>
+                      <span>{format(new Date(post.created_at), "MMM d, yyyy")}</span>
                     </div>
-                  )}
-                  <CardTitle className="text-xl">{post.title}</CardTitle>
-                  {post.excerpt && (
-                    <CardDescription className="mt-2">{post.excerpt}</CardDescription>
-                  )}
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center text-sm text-muted-foreground gap-4">
-                    <span>By {post.author}</span>
-                    <span>{format(new Date(post.created_at), "MMM d, yyyy")}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            <p className="text-center text-muted-foreground">No posts yet. Check back later!</p>
-          )}
-        </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <p className="text-center text-muted-foreground">No posts yet. Check back later!</p>
+            )}
+          </div>
+        </section>
       </div>
 
       <BottomNav />
